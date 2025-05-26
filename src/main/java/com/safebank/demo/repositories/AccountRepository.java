@@ -12,5 +12,6 @@ import com.safebank.demo.domains.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByNumber(String number);
     List<Account> findByCustomerCPF(String customerCPF);
+    boolean existsByNumber(String number);
     
 }

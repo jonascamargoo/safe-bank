@@ -1,6 +1,7 @@
 package com.safebank.demo.domains;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,14 +21,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "tbAccount")
-public class Transaction implements Serializable{
+public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, precision = 10)
-    @NotEmpty private double value;
+    @NotEmpty private BigDecimal value;
 
     @JoinColumn(name = "idAccount", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
