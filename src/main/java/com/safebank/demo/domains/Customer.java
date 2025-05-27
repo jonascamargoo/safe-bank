@@ -33,7 +33,7 @@ public class Customer implements Serializable{
 
    
     @Column(nullable = false, length = 20)
-    @NotBlank private String phone;
+    @NotBlank private String phoneNumber;
 
     // @Column(nullable = false)
     // @NotBlank private String password;
