@@ -1,5 +1,6 @@
 package com.safebank.demo.services;
 
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.BeanUtils;
@@ -15,12 +16,10 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final CustomerService customerService; 
-    private final AccountDTO accountDTO;
 
-    public AccountService(AccountRepository accountRepository, CustomerService customerService, AccountDTO accountDTO) {
+    public AccountService(AccountRepository accountRepository, CustomerService customerService) {
         this.accountRepository = accountRepository;
         this.customerService = customerService;
-        this.accountDTO = accountDTO;
 
     }
 
@@ -43,6 +42,7 @@ public class AccountService {
         } while (accountRepository.existsByNumber(accountNumber));
         return accountNumber;
     }
+
 
 
 
