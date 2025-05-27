@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name = "tbAccount")
+@Table(name = "tbConta")
 public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

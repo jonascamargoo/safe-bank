@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "tbCustomer")
+@Table(name = "tbCliente")
 public class Customer implements Serializable{
 
     @Id

@@ -20,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name = "tbAccount")
+@Table(name = "tbLancamento")
 public class Transaction implements Serializable {
 
     @Id
