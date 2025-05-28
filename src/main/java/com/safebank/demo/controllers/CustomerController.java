@@ -25,7 +25,6 @@ public class CustomerController {
     private final CustomerService customerService;
     private final AccountService accountService;
 
-
     public  CustomerController(CustomerService customerService, AccountService accountService) {
         this.customerService = customerService;
         this.accountService = accountService;
@@ -55,7 +54,7 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable(value = "id") Long id) {
         this.customerService.deleteCustomer(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Customer deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body("Cliente removido com sucesso.");
     }
 
 

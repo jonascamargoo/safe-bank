@@ -1,13 +1,11 @@
 package com.safebank.demo.services;
 
-import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.safebank.demo.domains.Account;
-import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.AccountDTO;
 import com.safebank.demo.repositories.AccountRepository;
 
@@ -24,11 +22,14 @@ public class AccountService {
     }
 
     public Account createAccount(AccountDTO accountDTO) {
-        Customer customer = customerService.getCustomerByCPF(accountDTO.customerCPF()); 
-        Account newAccount = new Account();
-        BeanUtils.copyProperties(customer, newAccount);
-        newAccount.setNumber(generateNumber(accountDTO));
-        return accountRepository.save(newAccount);
+        String accountNumber = accountDTO.number();
+        if(accountRepository.existsByNumber(accountNumber)) {
+            throw new IllegalArgumentException("Account with number " + accountNumber + " already exists.");
+        }
+        Account account = new Account();
+        BeanUtils.copyProperties(accountDTO, account);
+        account.setNumber(generateNumber(accountDTO));
+        return accountRepository.save(account);
     }
 
     public String  generateNumber(AccountDTO accountDTO) {
@@ -42,8 +43,5 @@ public class AccountService {
         } while (accountRepository.existsByNumber(accountNumber));
         return accountNumber;
     }
-
-
-
 
 }
