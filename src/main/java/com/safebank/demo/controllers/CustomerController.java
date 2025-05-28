@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.CustomerDTO;
-import com.safebank.demo.services.AccountService;
 import com.safebank.demo.services.CustomerService;
 
 import jakarta.validation.Valid;
@@ -23,11 +22,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/clientes")
 public class CustomerController {
     private final CustomerService customerService;
-    private final AccountService accountService;
 
-    public  CustomerController(CustomerService customerService, AccountService accountService) {
+    public  CustomerController(CustomerService customerService) {
         this.customerService = customerService;
-        this.accountService = accountService;
     }
 
     
