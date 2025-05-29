@@ -28,7 +28,9 @@ public class Account implements Serializable {
     @NotBlank private String number;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCustomer", nullable = false)
+    @JoinColumn(name = "idCliente", nullable = false)
     @NotBlank private Customer customer;
 
 }
+
+
