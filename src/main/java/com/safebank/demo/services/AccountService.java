@@ -45,4 +45,8 @@ public class AccountService {
         return accountNumber;
     }
 
+    public boolean existsByNumber(String number) {
+        return accountRepository.existsByNumber(number);
+    }
+
 }
