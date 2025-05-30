@@ -45,6 +45,16 @@ public class AccountService {
         return accountNumber;
     }
 
+
+    public Account getAccountByNumber(String number) {
+        return accountRepository.findByNumber(number)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found with number: " + number));
+    }
+
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
+    }
+
     public boolean existsByNumber(String number) {
         return accountRepository.existsByNumber(number);
     }
