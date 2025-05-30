@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.CustomerDTO;
 import com.safebank.demo.services.CustomerService;
 
@@ -29,21 +28,21 @@ public class CustomerController {
 
     
     @GetMapping("/")
-    public ResponseEntity<?> getCustomers() {
-        List<Customer> customers = customerService.getCustomers();
+    public ResponseEntity<List<CustomerDTO>> getCustomers() {
+        List<CustomerDTO> customers = customerService.getCustomers();
         return ResponseEntity.status(HttpStatus.OK).body(customers);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getCustomerById(@PathVariable(value = "id") Long id) {
-        Customer customer = customerService.getCustomerById(id);
+        CustomerDTO customer = customerService.getCustomerById(id);
         return ResponseEntity.status(HttpStatus.OK).body(customer);
 
     }
 
     @PostMapping("/")
-    public ResponseEntity<Customer> createCustomer(@RequestBody @Valid CustomerDTO customerDTO) {
-        Customer createdCustomer = customerService.createCustomer(customerDTO);
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Valid CustomerDTO customerDTO) {
+        CustomerDTO createdCustomer = customerService.createCustomer(customerDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
     }
 

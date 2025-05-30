@@ -6,8 +6,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.safebank.demo.domains.Account;
-import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.AccountDTO;
+import com.safebank.demo.dtos.CustomerDTO;
 import com.safebank.demo.repositories.AccountRepository;
 
 @Service
@@ -34,8 +34,8 @@ public class AccountService {
     }
 
     public String  generateNumber(AccountDTO accountDTO) {
-        Customer customer = customerService.getCustomerByCPF(accountDTO.customerCPF());
-        String twoFirstDigits = customer.getName().substring(0, 2).toUpperCase();
+        CustomerDTO customerDTO = customerService.getCustomerByCPF(accountDTO.customerCPF());
+        String twoFirstDigits = customerDTO.name().substring(0, 2).toUpperCase();
         Random random = new Random();
         String accountNumber;
         do {

@@ -1,47 +1,57 @@
 package com.safebank.demo.services;
 
 import java.util.List;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.CustomerDTO;
+import com.safebank.demo.mappers.CustomerMapper;
 import com.safebank.demo.repositories.CustomerRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CustomerService {
-    
+
     private final CustomerRepository customerRepository;
-    
-    public CustomerService(CustomerRepository customerRepository) {
+    private final CustomerMapper customerMapper;
+
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
-
+        this.customerMapper = customerMapper;
     }
 
-    public Customer createCustomer(CustomerDTO customerDTO) {
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(customerDTO, customer);
-        return customerRepository.save(customer);
+    @Transactional
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.toEntity(customerDTO);
+        Customer savedCustomer = customerRepository.save(customer);
+        return customerMapper.toDTO(savedCustomer);
     }
 
-    public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> getCustomers() {
+        return customerRepository.findAll()
+                .stream()
+                .map(customerMapper::toDTO)
+                .toList();
     }
 
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));
+    public CustomerDTO getCustomerById(Long id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));
+        return customerMapper.toDTO(customer);
     }
 
-    public Customer getCustomerByCPF(String CPF) {
+    public CustomerDTO getCustomerByCPF(String CPF) {
         return customerRepository.findByCPF(CPF)
+                .map(customerMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
     }
 
+    @Transactional
     public void deleteCustomer(Long id) {
-        customerRepository.delete(getCustomerById(id));
+        if (!customerRepository.existsById(id)) {
+            throw new RuntimeException("Cliente não encontrado com ID: " + id + " para exclusão.");
+        }
+        customerRepository.deleteById(id);
+
     }
-
-
 }
