@@ -45,6 +45,17 @@ public class CustomerService {
                 .map(customerMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
     }
+    
+
+    public Customer getCustomerEntityByCPF(String CPF) {
+        return customerRepository.findByCPF(CPF)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
+    }
+
+
+    public boolean customerExistsById(Long id) {
+        return customerRepository.existsById(id);
+    }
 
     @Transactional
     public void deleteCustomer(Long id) {

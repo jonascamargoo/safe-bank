@@ -55,18 +55,14 @@ public class TransactionService {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive.");
         }
-
         Account account = accountService.getAccountByNumber(accountNumber);
         if (account.getBalance().compareTo(amount) < 0) {
             throw new Error("Insufficient funds for withdrawal from account: " + accountNumber);
         }
-
         account.setBalance(account.getBalance().subtract(amount));
         accountService.saveAccount(account);
-
         Transaction transaction = new Transaction(account, amount, TransactionType.WITHDRAWAL);
         Transaction savedTransaction = transactionRepository.save(transaction);
-
         return transactionMapper.toDTO(savedTransaction);
     }
 

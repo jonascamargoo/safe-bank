@@ -1,36 +1,44 @@
 package com.safebank.demo.services;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.safebank.demo.domains.Account;
+import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.AccountDTO;
 import com.safebank.demo.dtos.CustomerDTO;
+import com.safebank.demo.mappers.AccountMapper;
+import com.safebank.demo.mappers.CustomerMapper;
 import com.safebank.demo.repositories.AccountRepository;
 
 @Service
 public class AccountService {
-
     private final AccountRepository accountRepository;
     private final CustomerService customerService; 
+    private final AccountMapper accountMapper;
 
-    public AccountService(AccountRepository accountRepository, CustomerService customerService) {
-        this.accountRepository = accountRepository;
-        this.customerService = customerService;
-
+    public AccountService(
+        AccountRepository accountRepository, 
+        CustomerService customerService, 
+        AccountMapper accountMapper, 
+        CustomerMapper customerMapper) {
+            this.accountRepository = accountRepository;
+            this.customerService = customerService;
+            this.accountMapper = accountMapper;
     }
 
-    public Account createAccount(AccountDTO accountDTO) {
-        String accountNumber = accountDTO.number();
-        if(accountRepository.existsByNumber(accountNumber)) {
-            throw new IllegalArgumentException("Account with number " + accountNumber + " already exists.");
-        }
+    @Transactional
+    public AccountDTO createAccount(AccountDTO accountDTO) {
+        Customer customer = customerService.getCustomerEntityByCPF(accountDTO.customerCPF());
         Account account = new Account();
-        BeanUtils.copyProperties(accountDTO, account);
+        account.setCustomer(customer);
         account.setNumber(generateNumber(accountDTO));
-        return accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account);
+        return accountMapper.toDTO(savedAccount);
     }
 
     public String  generateNumber(AccountDTO accountDTO) {
@@ -48,7 +56,7 @@ public class AccountService {
 
     public Account getAccountByNumber(String number) {
         return accountRepository.findByNumber(number)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found with number: " + number));
+            .orElseThrow(() -> new IllegalArgumentException("Account not found with number: " + number));
     }
 
     public void saveAccount(Account account) {
@@ -57,6 +65,19 @@ public class AccountService {
 
     public boolean existsByNumber(String number) {
         return accountRepository.existsByNumber(number);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<AccountDTO> getAccountsByCustomerId(Long customerId) {
+        if(!customerService.customerExistsById(customerId)) {
+            throw new RuntimeException("Customer not found with ID: " + customerId);
+        }
+
+        List<Account> accounts = accountRepository.findByCustomer_Id(customerId);
+        return accounts.stream()
+            .map(accountMapper::toDTO)
+            .collect(Collectors.toList());
     }
 
 }
