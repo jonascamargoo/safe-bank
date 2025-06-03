@@ -1,0 +1,143 @@
+# ==============================================================================
+# ARQUIVO .GITIGNORE UNIFICADO para o projeto safe-bank
+# ==============================================================================
+#
+# Localização: C:\Users\Jonas Camargo\Desktop\pessoal\safe-bank\.gitignore
+#
+# Estrutura do Projeto:
+# safe-bank/
+# ├── safe-bank-backend/  (Projeto Spring)
+# ├── safe-bank-frontend/ (Projeto Angular)
+# ├── .gitignore          (Este arquivo)
+# └── README.md
+#
+# ==============================================================================
+
+# Globais e Comuns
+# ==============================================================================
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+._*
+
+# Logs comuns (se houver algum na raiz ou de forma genérica)
+# *.log
+
+# Arquivos de ambiente (se houver um .env global na raiz)
+# .env
+# .env.local
+# .env.*.local
+# !.env.example # Não ignorar arquivos de exemplo
+
+# IDE - Configurações Globais para a Raiz do Projeto
+# ==============================================================================
+### IntelliJ IDEA ###
+# Ignora a pasta .idea na raiz do projeto.
+# Arquivos .iml de módulo devem ser especificados nas seções de cada subprojeto.
+.idea/
+
+### Visual Studio Code ###
+# Ignora a pasta .vscode na raiz do projeto, exceto arquivos de configuração comuns.
+# Se os subprojetos tiverem suas próprias pastas .vscode, adicione regras específicas para elas abaixo.
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/ # Cache do plugin de histórico do VSCode
+
+### Outros editores/IDEs (se usados na raiz do projeto) ###
+# *.sublime-workspace
+# .c9/
+
+
+# Backend - Aplicação Spring (em 'safe-bank-backend/')
+# ==============================================================================
+# ------------------------------------------------------------------------------
+
+# Arquivos e pastas específicas do Spring / Maven / Java
+safe-bank-backend/HELP.md
+safe-bank-backend/target/
+!safe-bank-backend/.mvn/wrapper/maven-wrapper.jar # Importante para manter o wrapper do Maven
+!safe-bank-backend/src/main/**/target/ # Não ignora 'target' dentro de src/main (se necessário)
+!safe-bank-backend/src/test/**/target/ # Não ignora 'target' dentro de src/test (se necessário)
+safe-bank-backend/sugestoes.txt
+safe-bank-backend/.env # Arquivo de ambiente específico do Spring
+
+### STS (Spring Tool Suite) / Eclipse ###
+safe-bank-backend/.apt_generated
+safe-bank-backend/.classpath
+safe-bank-backend/.factorypath
+safe-bank-backend/.project
+safe-bank-backend/.settings/ # Adicionada barra para diretório
+safe-bank-backend/.springBeans
+safe-bank-backend/.sts4-cache
+
+### IntelliJ IDEA (arquivos de módulo do Spring) ###
+safe-bank-backend/*.iml
+safe-bank-backend/*.iws # Arquivos antigos do IntelliJ (workspace)
+safe-bank-backend/*.ipr # Arquivos antigos do IntelliJ (projeto)
+
+### NetBeans ###
+safe-bank-backend/nbproject/private/
+safe-bank-backend/nbbuild/
+safe-bank-backend/dist/ # Pasta 'dist' do NetBeans para o Spring
+safe-bank-backend/nbdist/
+safe-bank-backend/.nb-gradle/
+safe-bank-backend/build/ # Pasta 'build' do NetBeans para o Spring
+!safe-bank-backend/src/main/**/build/
+!safe-bank-backend/src/test/**/build/
+
+### VS Code (se houver uma pasta .vscode específica para o Spring) ###
+# safe-bank-backend/.vscode/
+
+
+# Frontend - Aplicação Angular (em 'safe-bank-frontend/')
+# ==============================================================================
+# ------------------------------------------------------------------------------
+
+# Saída de compilação e dependências do Angular / Node
+safe-bank-frontend/dist/
+safe-bank-frontend/tmp/
+safe-bank-frontend/out-tsc/
+safe-bank-frontend/bazel-out/
+safe-bank-frontend/node_modules/
+safe-bank-frontend/.angular/cache/
+
+# Logs específicos do Angular / Node
+safe-bank-frontend/npm-debug.log
+safe-bank-frontend/yarn-error.log
+safe-bank-frontend/libpeerconnection.log
+safe-bank-frontend/testem.log
+
+# Relatórios de cobertura
+safe-bank-frontend/coverage/
+
+# Arquivos diversos do Angular
+safe-bank-frontend/connect.lock
+safe-bank-frontend/typings/
+safe-bank-frontend/.sass-cache/
+
+### IDEs e Editores (específicos do Angular) ###
+# Eclipse / STS (se usado para o projeto Angular)
+safe-bank-frontend/.project
+safe-bank-frontend/.classpath
+safe-bank-frontend/.settings/ # Adicionada barra para diretório
+
+# IntelliJ IDEA (arquivo de módulo do Angular)
+safe-bank-frontend/*.iml
+
+# Sublime Text
+safe-bank-frontend/*.sublime-workspace
+
+# C9 Editor
+safe-bank-frontend/.c9/
+
+safe-bank-frontend/.vscode/*
+!safe-bank-frontend/.vscode/settings.json
+!safe-bank-frontend/.vscode/tasks.json
+!safe-bank-frontend/.vscode/launch.json
+!safe-bank-frontend/.vscode/extensions.json
+safe-bank-frontend/.history/*
+
+.vscode
