@@ -11,6 +11,7 @@ import com.safebank.demo.domains.Account;
 import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.AccountDTO;
 import com.safebank.demo.dtos.CustomerDTO;
+import com.safebank.demo.exceptions.customExceptions.AccountNotFound;
 import com.safebank.demo.mappers.AccountMapper;
 import com.safebank.demo.mappers.CustomerMapper;
 import com.safebank.demo.repositories.AccountRepository;
@@ -56,7 +57,7 @@ public class AccountService {
 
     public Account getAccountByNumber(String number) {
         return accountRepository.findByNumber(number)
-            .orElseThrow(() -> new IllegalArgumentException("Account not found with number: " + number));
+            .orElseThrow(AccountNotFound::new);
     }
 
     public void saveAccount(Account account) {
