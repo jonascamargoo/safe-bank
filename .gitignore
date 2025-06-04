@@ -120,12 +120,12 @@ ui/*.sublime-workspace
 # Visual Studio Code (específico do frontend, se não coberto globalmente)
 # As regras globais para .vscode/ e .history/ já cobrem o frontend.
 # Se precisar de regras .vscode específicas para o frontend que não devem ser globais:
-# ui/.vscode/*
-# !ui/.vscode/settings.json
-# !ui/.vscode/tasks.json
-# !ui/.vscode/launch.json
-# !ui/.vscode/extensions.json
-# ui/.history/*
+ui/.vscode/*
+!ui/.vscode/settings.json
+!ui/.vscode/tasks.json
+!ui/.vscode/launch.json
+!ui/.vscode/extensions.json
+ui/.history/*
 
 # Miscellaneous
 ui/.angular/cache/
@@ -139,4 +139,3 @@ ui/typings/
 # Arquivos de sistema (já cobertos pela seção global, mas listados para clareza se vierem de um template)
 # ui/.DS_Store
 # ui/Thumbs.db
-
