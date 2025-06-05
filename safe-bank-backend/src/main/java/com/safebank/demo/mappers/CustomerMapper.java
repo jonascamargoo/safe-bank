@@ -14,7 +14,7 @@ public class CustomerMapper implements GenericMapper<Customer, CustomerDTO> {
         return new CustomerDTO(
                 customer.getId(),
                 customer.getName(),
-                customer.getCPF(),
+                customer.getCpf(),
                 customer.getPhoneNumber()
         );
     }
@@ -27,7 +27,7 @@ public class CustomerMapper implements GenericMapper<Customer, CustomerDTO> {
         Customer customer = new Customer();
         customer.setId(customerDTO.id());
         customer.setName(customerDTO.name());
-        customer.setCPF(customerDTO.CPF());
+        customer.setCpf(customerDTO.cpf());
         return customer;
     }
 
