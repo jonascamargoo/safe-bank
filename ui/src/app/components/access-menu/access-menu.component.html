@@ -1,0 +1,22 @@
+<div class="flex flex-col min-h-screen bg-gray-100">
+  <header class="p-4 bg-white shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="text-2xl font-bold text-blue-600">OBank</div>
+      <div>
+        <span>Customer: {{ customerName }}</span>
+        <button (click)="logout()" class="ml-4 text-blue-600 hover:underline">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto p-6 text-center">
+    <h2 class="text-xl font-semibold mb-6">The Bank that Understands You.</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 justify-items-center">
+      <div *ngFor="let option of menuOptions" (click)="navigateTo(option.route)"
+           class="flex flex-col items-center p-4 bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition-shadow">
+        <img [src]="option.icon" alt="{{ option.title }}" class="w-16 h-16 mb-2">
+        <span class="text-sm font-medium">{{ option.title }}</span>
+      </div>
+      </div>
+  </main>
+</div>
