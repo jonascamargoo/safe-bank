@@ -34,7 +34,7 @@ public class AccountService {
 
     @Transactional
     public AccountDTO createAccount(AccountDTO accountDTO) {
-        Customer customer = customerService.getCustomerEntityByCPF(accountDTO.customerCPF());
+        Customer customer = customerService.getCustomerEntityByCpf(accountDTO.customerCPF());
         Account account = new Account();
         account.setCustomer(customer);
         account.setNumber(generateNumber(accountDTO));
@@ -43,7 +43,7 @@ public class AccountService {
     }
 
     public String  generateNumber(AccountDTO accountDTO) {
-        CustomerDTO customerDTO = customerService.getCustomerByCPF(accountDTO.customerCPF());
+        CustomerDTO customerDTO = customerService.getCustomerByCpf(accountDTO.customerCPF());
         String twoFirstDigits = customerDTO.name().substring(0, 2).toUpperCase();
         Random random = new Random();
         String accountNumber;

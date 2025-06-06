@@ -1,6 +1,9 @@
 package com.safebank.demo.services;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.safebank.demo.domains.Customer;
@@ -40,16 +43,36 @@ public class CustomerService {
         return customerMapper.toDTO(customer);
     }
 
-    public CustomerDTO getCustomerByCPF(String CPF) {
-        return customerRepository.findByCPF(CPF)
+    // public CustomerDTO getCustomerByCpf(String cpf) {
+    //     return customerRepository.findByCpf(cpf)
+    //             .map(customerMapper::toDTO)
+    //             .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
+    // }
+
+    public CustomerDTO getCustomerByCpf(String cpf) {
+        UserDetails userDetails = customerRepository.findByCpf(cpf);
+        // 1. Usa o método privado para fazer a conversão
+        return toCustomer(userDetails)
+                // 2. Mapeia o Customer (se existir) para DTO
                 .map(customerMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
+                // 3. Lança uma exceção se o Optional estiver vazio
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + cpf));
     }
     
 
-    public Customer getCustomerEntityByCPF(String CPF) {
-        return customerRepository.findByCPF(CPF)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
+    public Customer getCustomerEntityByCpf(String cpf) {
+        UserDetails customer = customerRepository.findByCpf(cpf);
+        return toCustomer(customer).get();
+    }
+
+    // public Customer getCustomerEntityByCpf(String cpf) {
+    //     return customerRepository.findByCpf(cpf)
+    //             .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
+    // }
+
+    public Long getCustomerIdByCpf(String cpf) {
+        return customerRepository.findIdByCpf(cpf)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + cpf));
     }
 
 
@@ -64,5 +87,11 @@ public class CustomerService {
         }
         customerRepository.deleteById(id);
 
+    }
+
+    private Optional<Customer> toCustomer(UserDetails userDetails) {
+        return Optional.ofNullable(userDetails)
+                .filter(Customer.class::isInstance)
+                .map(Customer.class::cast);
     }
 }

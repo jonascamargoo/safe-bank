@@ -15,7 +15,7 @@ public class AccountMapper implements GenericMapper<Account, AccountDTO> {
         return new AccountDTO(
                 account.getId(),
                 account.getNumber(),
-                account.getCustomer() != null ? account.getCustomer().getCPF() : null
+                account.getCustomer() != null ? account.getCustomer().getCpf() : null
         );
     }
 
