@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.CustomerDTO;
+import com.safebank.demo.dtos.authentication.RegisterRequestDTO;
 import com.safebank.demo.mappers.CustomerMapper;
 import com.safebank.demo.repositories.CustomerRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class CustomerService {
         Customer savedCustomer = customerRepository.save(customer);
         return customerMapper.toDTO(savedCustomer);
     }
+   
 
     public List<CustomerDTO> getCustomers() {
         return customerRepository.findAll()
@@ -41,6 +44,20 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));
         return customerMapper.toDTO(customer);
+    }
+
+    public Customer registerCustomer(RegisterRequestDTO registerRequest) {
+        String customerCpf = registerRequest.cpf();
+
+        if(customerRepository.findByCpf(registerRequest.cpf()) != null) {
+            throw new RuntimeException("Cliente já cadastrado com CPF: " + customerCpf);
+        }
+
+        String encryptedPassword = new BCryptPasswordEncoder()
+                .encode(registerRequest.password());
+        Customer newCustomer = new Customer(customerCpf, encryptedPassword);
+        return customerRepository.save(newCustomer);
+
     }
 
     // public CustomerDTO getCustomerByCpf(String cpf) {

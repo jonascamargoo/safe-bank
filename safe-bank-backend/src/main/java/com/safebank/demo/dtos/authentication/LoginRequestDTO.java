@@ -1,5 +1,5 @@
 package com.safebank.demo.dtos.authentication;
 
-public record LoginRequestDTO(String login, String password) {
+public record LoginRequestDTO(String cpf, String password) {
     
 }
