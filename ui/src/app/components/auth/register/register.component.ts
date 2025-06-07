@@ -1,37 +1,51 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'; // Removido Validators
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, RegisterResponseDTO } from '../../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { RegisterRequestDTO } from '../../../dtos/authentication/RegisterRequestDTO';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
-  registerForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    cpf: new FormControl('', [Validators.required]),
-    phoneNumber: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required, Validators.minLength(3)])
-  });
 
-  constructor(private authService: AuthService, private router: Router) { }
+  registerForm: FormGroup;
 
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {
+    // Validadores removidos da construção do formulário
+    this.registerForm = this.fb.group({
+      nome: [''],
+      cpf: [''],
+      email: [''],
+      senha: ['']
+    });
+  }
+
+  /**
+   * Método onSubmit modificado para submeter o formulário diretamente,
+   * ignorando qualquer validação do lado do cliente.
+   */
   onSubmit() {
-    if (this.registerForm.valid) {
-      const registerData: RegisterRequestDTO = this.registerForm.value as RegisterRequestDTO;
+    const registerData: RegisterRequestDTO = this.registerForm.value;
 
-      this.authService.register(registerData).subscribe({
-        next: (response: RegisterResponseDTO) => {
-          this.router.navigate(['/logar']);
-        },
-        error: (err) => {
-        }
-      });
-    }
+    this.authService.register(registerData).subscribe({
+      next: () => {
+        console.log('Registro bem-sucedido!');
+        // Redireciona para a página de login após o sucesso
+        this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
+      },
+      error: (error) => {
+        console.error('Falha no registro', error);
+        // Aqui você pode adicionar uma notificação de erro para o usuário
+      }
+    });
   }
 }

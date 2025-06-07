@@ -18,8 +18,6 @@ import com.safebank.demo.dtos.authentication.RegisterResponseDTO;
 import com.safebank.demo.services.CustomerService;
 import com.safebank.demo.services.security.TokenService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
