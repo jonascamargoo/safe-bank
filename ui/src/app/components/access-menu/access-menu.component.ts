@@ -42,7 +42,7 @@ export class AccessMenuComponent implements OnInit {
 
   logout(): void {
     // Implement logout logic (e.g., clear session, navigate to login)
-    this.router.navigate(['/login']);
+    this.router.navigate(['/logar']);
     console.log('Logged out');
   }
 }

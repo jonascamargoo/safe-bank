@@ -1,40 +1,81 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
   <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
     <div class="flex justify-center">
-      <!-- Você pode colocar um logo aqui, similar ao "OBank" na Figura 03 do PDF -->
       <h3 class="text-2xl font-bold text-center text-blue-600">OBank</h3>
     </div>
     <h3 class="mt-4 text-2xl font-bold text-center">Registro de Clientes</h3>
-    <form action=""> <!-- Considere usar (ngSubmit)="onSubmit()" e remover 'action' se estiver usando ReactiveFormsModule -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()"> <!-- Correção 1: Vinculação do formGroup e ngSubmit -->
       <div class="mt-4">
+        <!-- Campo Nome -->
         <div>
           <label class="block" for="name">Nome</label>
-          <input type="text" placeholder="Maria da Silva" id="name" name="name"
+          <input type="text" placeholder="Maria da Silva" 
+                 id="name" formControlName="name" 
                  class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+          
+          <!-- Mensagem de erro -->
+          <div *ngIf="registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched)"
+               class="mt-1 text-red-500 text-sm">
+            Nome é obrigatório
+          </div>
         </div>
+
+        <!-- Campo CPF -->
         <div class="mt-4">
           <label class="block" for="cpf">CPF</label> 
-          <input type="text" placeholder="123.456.789-00" id="cpf" name="cpf"
+          <input type="text" placeholder="123.456.789-00" 
+                 id="cpf" formControlName="cpf"
                  class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+          
+          <!-- Mensagem de erro -->
+          <div *ngIf="registerForm.get('cpf')?.invalid && (registerForm.get('cpf')?.dirty || registerForm.get('cpf')?.touched)"
+               class="mt-1 text-red-500 text-sm">
+            CPF é obrigatório
+          </div>
         </div>
+
+        <!-- Campo Telefone (phoneNumber) -->
         <div class="mt-4">
-          <label class="block" for="telefone">Telefone</label> 
-          <input type="text" placeholder="(31) 98765-4321" id="telefone" name="telefone"
+          <label class="block" for="phoneNumber">Telefone</label> <!-- Correção 4: Nome correto do campo -->
+          <input type="text" placeholder="(31) 98765-4321" 
+                 id="phoneNumber" formControlName="phoneNumber" 
                  class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+          
+          <!-- Mensagem de erro -->
+          <div *ngIf="registerForm.get('phoneNumber')?.invalid && (registerForm.get('phoneNumber')?.dirty || registerForm.get('phoneNumber')?.touched)"
+               class="mt-1 text-red-500 text-sm">
+            Telefone é obrigatório
+          </div>
         </div>
+
+        <!-- Campo Senha -->
         <div class="mt-4">
           <label class="block" for="password">Senha</label> 
-          <input type="password" placeholder="Senha" id="password" name="password"
+          <input type="password" placeholder="Senha" 
+                 id="password" formControlName="password" 
                  class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+          
+          <!-- Mensagens de erro -->
+          <div *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)">
+            <div *ngIf="registerForm.get('password')?.hasError('required')" class="mt-1 text-red-500 text-sm">
+              Senha é obrigatória
+            </div>
+            <div *ngIf="registerForm.get('password')?.hasError('minlength')" class="mt-1 text-red-500 text-sm">
+              Mínimo de 3 caracteres
+            </div>
+          </div>
         </div>
+
         <div class="flex items-baseline justify-between">
-          <button type="submit" type="submit"
-            class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Cadastrar</button>
+          <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
+            Cadastrar
+          </button>
         </div>
+        
         <div class="mt-6 text-grey-dark">
           Já possui conta?
-          <!-- Atualize o href para a rota de login quando ela estiver configurada -->
-          <a class="text-blue-600 hover:underline" href="#">
+          <!-- Correção 8: Uso de routerLink para navegação -->
+          <a class="text-blue-600 hover:underline" routerLink="/logar">
             Login
           </a>
         </div>

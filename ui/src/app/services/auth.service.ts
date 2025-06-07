@@ -1,23 +1,67 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RegisterRequestDTO } from '../dtos/authentication/RegisterRequestDTO';
-import { LoginRequestDTO } from '../dtos/authentication/LoginRequestDTO';
-import { LoginResponseDTO } from '../dtos/authentication/LoginResponseDTO';
+import { jwtDecode } from "jwt-decode";
+
+// Interfaces para os DTOs
+export interface RegisterRequestDTO {
+  name: string;
+  cpf: string;
+  phoneNumber: string;
+  password: string;
+}
+
+export interface LoginRequestDTO {
+  cpf: string;
+  password: string;
+}
+
+export interface LoginResponseDTO {
+  token: string;
+}
+
+export interface RegisterResponseDTO {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private readonly baseUrl = 'http://localhost:8080/api/auth';
 
-  constructor(private http: HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
-  register(data: RegisterRequestDTO): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/registrar`, data);
+  register(registerData: RegisterRequestDTO): Observable<RegisterResponseDTO> {
+    return this.httpClient.post<RegisterResponseDTO>(
+      `${this.baseUrl}/registrar`,
+      registerData
+    );
   }
 
-  login(data: LoginRequestDTO): Observable<LoginResponseDTO> {
-    return this.http.post<LoginResponseDTO>(`${this.apiUrl}/logar`, data);
+  login(loginData: LoginRequestDTO): Observable<LoginResponseDTO> {
+    console.log(JSON.stringify(loginData))
+    return this.httpClient.post<LoginResponseDTO>(
+      `${this.baseUrl}/logar`,
+      // JSON.stringify(loginData)
+      loginData
+    );
+  }
+
+  getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  decodeToken(): any {
+    const token = this.getToken();
+    return token ? jwtDecode(token) : null;
+  }
+
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
+  }
+
+  logout(): void {
+    sessionStorage.removeItem('token');
   }
 }

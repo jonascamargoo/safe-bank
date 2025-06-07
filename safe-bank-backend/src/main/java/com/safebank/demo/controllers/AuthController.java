@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody @Valid RegisterRequestDTO registerRequest) {
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO registerRequest) {
         try {
             customerService.registerCustomer(registerRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(new RegisterResponseDTO("Cliente cadastrado com sucesso"));
@@ -45,11 +45,12 @@ public class AuthController {
     }
 
     @PostMapping("/logar")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+        System.out.println("Logouuu");
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequest.cpf(), loginRequest.password());
+
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((Customer) auth.getPrincipal());
-        System.out.println("Logouuu");
         return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token));
     }
 
