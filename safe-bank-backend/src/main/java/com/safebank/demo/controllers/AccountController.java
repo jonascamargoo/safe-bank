@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.safebank.demo.dtos.UpdateCreditLimitDTO;
+import com.safebank.demo.services.AccountService;
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -44,6 +48,15 @@ public class AccountController {
     public ResponseEntity<Void> deleteMyAccount(@PathVariable String accountNumber, Authentication authentication) {
         accountService.deleteAccount(accountNumber, authentication);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{accountNumber}/limite")
+    public ResponseEntity<Void> updateCreditLimit(
+            @PathVariable String accountNumber,
+            @RequestBody @Valid UpdateCreditLimitDTO dto,
+            Authentication authentication) {
+        accountService.updateCreditLimit(accountNumber, dto.newCreditLimit(), authentication);
+        return ResponseEntity.noContent().build(); // Resposta 204 No Content indica sucesso
     }
 
     

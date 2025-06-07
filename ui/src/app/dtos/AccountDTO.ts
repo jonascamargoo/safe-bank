@@ -1,7 +1,15 @@
+// export interface AccountDTO {
+//   creditLimit: any;
+//   id: number;
+//   agency: string;
+//   accountNumber: string;
+//   balance: number;
+//   customerId: number;
+// }
+
+
 export interface AccountDTO {
-  id: number;
-  agency: string;
   accountNumber: string;
   balance: number;
-  customerId: number;
+  creditLimit: number;
 }

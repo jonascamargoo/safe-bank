@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional; // Importe este
+import java.math.BigDecimal; // E este
 import org.springframework.security.core.Authentication;
 
 import com.safebank.demo.domains.Account;
@@ -124,6 +125,26 @@ public class AccountService {
                 .map(accountMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+
+    public Account checkAccountOwnership(String accountNumber, Authentication authentication) {
+        Customer customer = (Customer) authentication.getPrincipal();
+        Account account = getAccountByNumber(accountNumber);
+        if (!account.getCustomer().getId().equals(customer.getId())) {
+            throw new SecurityException("Acesso negado: a conta não pertence ao usuário autenticado.");
+        }
+        return account;
+    }
+
+    // Adicione este novo método
+    @Transactional
+    public void updateCreditLimit(String accountNumber, BigDecimal newCreditLimit, Authentication authentication) {
+        Account account = checkAccountOwnership(accountNumber, authentication);
+        account.setCreditLimit(newCreditLimit);
+        accountRepository.save(account);
+    }
+
+    
 
 
 }

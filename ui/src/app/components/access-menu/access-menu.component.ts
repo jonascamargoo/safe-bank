@@ -1,48 +1,87 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // For *ngFor, *ngIf, etc.
-import { Router, RouterLink, RouterOutlet } from '@angular/router'; // Router for navigation, RouterLink for <a routerLink="">
 
-// Define an interface for menu options for better type safety
-interface MenuOption {
-  title: string;
-  icon: string;
-  route: string;
-}
+// ui/src/app/components/access-menu/access-menu.component.ts
+import { Component, OnInit } from '@angular/core';
+import { RouterLink, RouterModule } from '@angular/router';
+import { AccountService } from '../../services/account.service';
+import { AccountDTO } from '../../dtos/AccountDTO';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-access-menu',
   standalone: true,
-  imports: [
-    CommonModule, // Provides *ngFor, *ngIf, etc.
-    RouterLink,    // For any <a routerLink="..."> elements if you add them
-    RouterOutlet
-  ],
-  templateUrl: './access-menu.component.html', // Assuming HTML is in a separate file
-  // styleUrls: ['./access-menu.component.css'] // If you have specific styles
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './access-menu.component.html',
 })
 export class AccessMenuComponent implements OnInit {
-  customerName: string = "Maria"; // Example, fetch from a service
-  menuOptions: MenuOption[] = [
-    { title: 'Accounts', icon: 'assets/icons/accounts.svg', route: '/accounts' },
-    { title: 'Withdraw', icon: 'assets/icons/withdraw.svg', route: '/withdraw' },
-    { title: 'Deposit', icon: 'assets/icons/deposit.svg', route: '/deposit' },
-    { title: 'Statement', icon: 'assets/icons/statement.svg', route: '/statement' },
-    // Add other options like 'Transfers' if needed
-  ];
+  accounts: AccountDTO[] = [];
+  limitsForm: FormGroup;
+  message: string | null = null;
 
-  constructor(private router: Router) {} // Inject Router for navigation
+  constructor(
+    private accountService: AccountService,
+    private fb: FormBuilder
+  ) {
+    this.limitsForm = this.fb.group({
+      accountLimits: this.fb.array([])
+    });
+  }
 
   ngOnInit(): void {
-    // Fetch customerName or other initial data if needed
+    this.loadAccounts();
   }
 
-  navigateTo(route: string): void {
-    this.router.navigate([route]);
+  get accountLimits(): FormArray {
+    return this.limitsForm.get('accountLimits') as FormArray;
   }
 
-  logout(): void {
-    // Implement logout logic (e.g., clear session, navigate to login)
-    this.router.navigate(['/logar']);
-    console.log('Logged out');
+  loadAccounts(): void {
+    this.accountService.getAccounts().subscribe(data => {
+      this.accounts = data;
+      this.createFormControls();
+    });
+  }
+
+  createFormControls(): void {
+    this.accountLimits.clear(); // Limpa controles antigos antes de recriar
+    this.accounts.forEach(account => {
+      this.accountLimits.push(this.fb.group({
+        limit: [account.creditLimit, [Validators.required, Validators.min(0)]]
+      }));
+    });
+  }
+  
+  onCreateAccount(): void {
+    this.accountService.createAccount().subscribe({
+      next: () => {
+        this.message = 'Conta criada com sucesso!';
+        this.loadAccounts(); // Recarrega a lista de contas
+      },
+      error: (err) => {
+        this.message = 'Erro ao criar conta.';
+        console.error(err);
+      }
+    });
+  }
+
+  onUpdateLimit(index: number): void {
+    const formGroup = this.accountLimits.at(index);
+    if (formGroup.invalid) {
+      this.message = 'O valor do limite é inválido.';
+      return;
+    }
+    const accountNumber = this.accounts[index].accountNumber;
+    const newLimit = formGroup.value.limit;
+
+    this.accountService.updateCreditLimit(accountNumber, newLimit).subscribe({
+      next: () => {
+        this.accounts[index].creditLimit = newLimit; // Atualiza o valor localmente
+        this.message = `Limite da conta ${accountNumber} atualizado com sucesso!`;
+      },
+      error: (err) => {
+        this.message = 'Falha ao atualizar o limite.';
+        console.error(err);
+      }
+    });
   }
 }

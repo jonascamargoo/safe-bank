@@ -12,10 +12,16 @@ export class AccountService {
   constructor(private http: HttpClient) { }
 
   getAccounts(): Observable<AccountDTO[]> {
-    return this.http.get<AccountDTO[]>(`${this.apiUrl}/`);
+    return this.http.get<AccountDTO[]>(this.apiUrl);
   }
 
   createAccount(): Observable<AccountDTO> {
-    return this.http.post<AccountDTO>(`${this.apiUrl}/`, {});
+    return this.http.post<AccountDTO>(this.apiUrl, {});
+  }
+
+  updateCreditLimit(accountNumber: string, newCreditLimit: number): Observable<void> {
+    const url = `${this.apiUrl}/${accountNumber}/limite`;
+    const body = { newCreditLimit };
+    return this.http.patch<void>(url, body);
   }
 }
