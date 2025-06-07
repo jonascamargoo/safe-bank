@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // For *ngFor, *ngIf, etc.
-import { Router, RouterLink } from '@angular/router'; // Router for navigation, RouterLink for <a routerLink="">
+import { Router, RouterLink, RouterOutlet } from '@angular/router'; // Router for navigation, RouterLink for <a routerLink="">
 
 // Define an interface for menu options for better type safety
 interface MenuOption {
@@ -14,7 +14,8 @@ interface MenuOption {
   standalone: true,
   imports: [
     CommonModule, // Provides *ngFor, *ngIf, etc.
-    RouterLink    // For any <a routerLink="..."> elements if you add them
+    RouterLink,    // For any <a routerLink="..."> elements if you add them
+    RouterOutlet
   ],
   templateUrl: './access-menu.component.html', // Assuming HTML is in a separate file
   // styleUrls: ['./access-menu.component.css'] // If you have specific styles

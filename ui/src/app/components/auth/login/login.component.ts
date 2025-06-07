@@ -1,27 +1,41 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { LoginRequestDTO } from '../../../dtos/authentication/LoginRequestDTO';
+import { LoginResponseDTO } from '../../../dtos/authentication/LoginResponseDTO';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Add ReactiveFormsModule here
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm = new FormGroup({
-    cpf: new FormControl('', [Validators.required /* Add CPF validation */]),
+    cpf: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
   });
 
+  constructor(private authService: AuthService, private router: Router) {}
+
   onSubmit() {
     if (this.loginForm.valid) {
-      // TODO: Call your authentication service to log in the user
-      console.log('Login form submitted:', this.loginForm.value);
-      // On successful login, navigate to the main menu/dashboard
-    } else {
-      this.loginForm.markAllAsTouched();
+      // O TypeScript garante que o objeto tem o formato correto de LoginRequestDTO
+      const loginData: LoginRequestDTO = this.loginForm.value as LoginRequestDTO;
+
+      this.authService.login(loginData).subscribe({
+        next: (response: LoginResponseDTO) => {
+          // O autocompletar e o compilador garantem o acesso correto a `response.token`
+          localStorage.setItem('authToken', response.token);
+          this.router.navigate(['/menu']);
+        },
+        error: (err) => {
+          console.error('Login failed', err);
+          // Implementar feedback de erro para o usuário
+        }
+      });
     }
   }
 }
