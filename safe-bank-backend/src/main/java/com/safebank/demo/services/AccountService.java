@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import com.safebank.demo.domains.Account;
@@ -102,6 +103,13 @@ public class AccountService {
         return accounts.stream()
                 .map(accountMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication, Pageable pageable) {
+        Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+        Page<Account> accountsPage = accountRepository.findByCustomer_Id(authenticatedCustomer.getId(), pageable);
+        return accountsPage.map(accountMapper::toDTO);
     }
 
 
