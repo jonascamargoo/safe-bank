@@ -20,16 +20,9 @@ public class AccountController {
 
     @PostMapping("/")
     public ResponseEntity<AccountDTO> createAccount(Authentication authentication) {
-        // Passamos o objeto de autenticação para o serviço
         AccountDTO createdAccount = accountService.createAccount(authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
     }
-
-    // @GetMapping("/clientes/{customerId}/contas")
-    // public ResponseEntity<List<AccountDTO>> listAccountsForCustomer(@PathVariable Long customerId) {
-    //     List<AccountDTO> accounts = accountService.getAccountsByCustomerId(customerId);
-    //     return ResponseEntity.ok(accounts);
-    // }
 
     @GetMapping("/")
     public ResponseEntity<List<AccountDTO>> listMyAccounts(Authentication authentication) {
@@ -40,7 +33,6 @@ public class AccountController {
     @DeleteMapping("/{accountNumber}")
     public ResponseEntity<Void> deleteMyAccount(@PathVariable String accountNumber, Authentication authentication) {
         accountService.deleteAccount(accountNumber, authentication);
-        // Retorna 204 No Content, um status comum para deleções bem-sucedidas.
         return ResponseEntity.noContent().build();
     }
 

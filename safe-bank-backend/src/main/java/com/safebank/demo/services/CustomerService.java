@@ -34,10 +34,7 @@ public class CustomerService {
     }
 
     public CustomerDTO getAuthenticatedCustomerInfo(Authentication authentication) {
-        // 1. Pega o objeto do usuário que foi autenticado via token
         Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
-
-        // 2. Mapeia a entidade Customer para um CustomerDTO para não expor a senha
         return customerMapper.toDTO(authenticatedCustomer);
     }
     
@@ -71,41 +68,15 @@ public class CustomerService {
             encryptedPassword,
             registerRequest.phoneNumber()
         );
-        
-        // Customer newCustomer = new Customer(customerCpf, encryptedPassword);
 
         return customerRepository.save(newCustomer);
 
     }
 
-
-    // public void registerCustomer(RegisterRequestDTO registerRequest) {
-    //     if (customerRepository.findByCpf(registerRequest.cpf()) != null) {
-    //         throw new IllegalArgumentException("CPF já cadastrado.");
-    //     }
-        
-    //     // A LINHA ABAIXO É O PONTO CRÍTICO
-    //     Customer newCustomer = customerMapper.toEntity(registerRequest);
-
-    //     String encryptedPassword = passwordEncoder.encode(registerRequest.password());
-    //     newCustomer.setPassword(encryptedPassword);
-
-    //     customerRepository.save(newCustomer);
-    // }
-
-    // public CustomerDTO getCustomerByCpf(String cpf) {
-    //     return customerRepository.findByCpf(cpf)
-    //             .map(customerMapper::toDTO)
-    //             .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
-    // }
-
     public CustomerDTO getCustomerByCpf(String cpf) {
         UserDetails userDetails = customerRepository.findByCpf(cpf);
-        // 1. Usa o método privado para fazer a conversão
         return toCustomer(userDetails)
-                // 2. Mapeia o Customer (se existir) para DTO
                 .map(customerMapper::toDTO)
-                // 3. Lança uma exceção se o Optional estiver vazio
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + cpf));
     }
     
@@ -114,11 +85,6 @@ public class CustomerService {
         UserDetails customer = customerRepository.findByCpf(cpf);
         return toCustomer(customer).get();
     }
-
-    // public Customer getCustomerEntityByCpf(String cpf) {
-    //     return customerRepository.findByCpf(cpf)
-    //             .orElseThrow(() -> new RuntimeException("Cliente não encontrado com CPF: " + CPF));
-    // }
 
     public Long getCustomerIdByCpf(String cpf) {
         return customerRepository.findIdByCpf(cpf)
