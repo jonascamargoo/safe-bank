@@ -13,28 +13,27 @@ import { WithdrawComponent } from './components/withdraw/withdraw.component';
 import { StatementComponent } from './components/statement/statement.component';
 
 export const routes: Routes = [
-  // Rotas públicas (acessíveis sem login)
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  // Rotas públicas com os novos nomes
+  { path: 'logar', component: LoginComponent },
+  { path: 'registrar', component: RegisterComponent },
 
-  // Rota padrão: redireciona para o login se o usuário não estiver logado
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // Rota padrão atualizada para /logar
+  { path: '', redirectTo: '/logar', pathMatch: 'full' },
 
   // Rotas privadas (protegidas pelo AuthGuard)
   {
     path: 'menu',
     component: AccessMenuComponent,
-    canActivate: [authGuard], // O guard protege o acesso ao menu e a todas as suas rotas filhas
+    canActivate: [authGuard],
     children: [
       { path: 'contas', component: AccountListComponent },
       { path: 'deposito', component: DepositComponent },
       { path: 'saque', component: WithdrawComponent },
       { path: 'extrato', component: StatementComponent },
-      // Redireciona 'menu' para 'menu/contas' por padrão
       { path: '', redirectTo: 'contas', pathMatch: 'full' },
     ]
   },
 
   // Rota de fallback para qualquer caminho não encontrado
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/logar' }
 ];
