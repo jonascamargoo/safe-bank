@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { User } from '../../../domains/User';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService, LoginRequestDTO, LoginResponseDTO } from '../../../services/auth.service';
 import { Auth } from '../../../domains/Auth';
 import { ToastModule } from 'primeng/toast';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ButtonModule, FormsModule, ReactiveFormsModule, ToastModule, CommonModule],
+  imports: [ButtonModule, FormsModule, ReactiveFormsModule, ToastModule, CommonModule, RouterModule],
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
