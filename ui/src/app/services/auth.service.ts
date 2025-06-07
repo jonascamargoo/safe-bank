@@ -64,4 +64,9 @@ export class AuthService {
   logout(): void {
     sessionStorage.removeItem('token');
   }
+
+  getCustomerName(): string | null {
+    const decodedToken = this.decodeToken();
+    return decodedToken ? decodedToken.name : null;
+  }
 }

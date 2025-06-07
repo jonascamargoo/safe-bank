@@ -40,6 +40,7 @@ public class SecurityConfigurations {
                 .build();
     }
 
+    // Deixei comentado, pois isso aqui desabilita o spring. Apenas para efeito de teste de autenticação
     // @Bean
     // public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     //     return httpSecurity

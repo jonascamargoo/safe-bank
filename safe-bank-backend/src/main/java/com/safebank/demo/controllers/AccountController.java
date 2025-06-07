@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.safebank.demo.dtos.UpdateCreditLimitDTO;
-import com.safebank.demo.services.AccountService;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -35,14 +34,6 @@ public class AccountController {
         List<AccountDTO> accounts = accountService.getAccountsForAuthenticatedCustomer(authentication);
         return ResponseEntity.ok(accounts);
     }
-
-    // @GetMapping("/")
-    // public ResponseEntity<Page<AccountDTO>> listMyAccounts(
-    //         Authentication authentication,
-    //         @PageableDefault(size = 10) Pageable pageable) {
-    //     Page<AccountDTO> accounts = accountService.getAccountsForAuthenticatedCustomer(authentication, pageable);
-    //     return ResponseEntity.ok(accounts);
-    // }
 
     @DeleteMapping("/{accountNumber}")
     public ResponseEntity<Void> deleteMyAccount(@PathVariable String accountNumber, Authentication authentication) {

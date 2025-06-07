@@ -1,37 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AccountDTO } from '../../dtos/AccountDTO';
 import { AccountService } from '../../services/account.service';
 import { TransactionService } from '../../services/transaction.service';
-import { TransactionRequestDTO } from '../../dtos/TransactionRequestDTO';
+import { TransferRequestDTO } from '../../dtos/TransferRequestDTO';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-deposit',
+  selector: 'app-transfer',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
-  templateUrl: './deposit.component.html',
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './transfer.component.html',
 })
-export class DepositComponent implements OnInit {
+export class TransferComponent implements OnInit {
+  transferForm: FormGroup;
   accounts: AccountDTO[] = [];
-  depositForm: FormGroup;
   message: string | null = null;
   messageType: 'success' | 'error' = 'success';
   customerName: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private accountService: AccountService,
     private transactionService: TransactionService,
+    private router: Router,
     private authService: AuthService
-    
   ) {
-    this.depositForm = this.fb.group({
-      accountNumber: ['', Validators.required],
-      value: ['', [Validators.required, Validators.min(0.01)]]
+    this.transferForm = this.fb.group({
+      sourceAccountNumber: ['', Validators.required],
+      destinationAccountNumber: ['', [Validators.required, Validators.pattern(/^[A-Z]{2}-\d{6}$/)]],
+      value: ['', [Validators.required, Validators.min(0.01)]],
     });
   }
 
@@ -47,28 +47,33 @@ export class DepositComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.depositForm.invalid) {
-      this.showMessage('Formulário inválido.', 'error');
+    if (this.transferForm.invalid) {
+      this.showMessage('Por favor, preencha todos os campos corretamente.', 'error');
       return;
     }
-    
-    const depositData: TransactionRequestDTO = this.depositForm.value;
 
-    this.transactionService.deposit(depositData).subscribe({
+    const transferData: TransferRequestDTO = this.transferForm.value;
+
+    if (transferData.sourceAccountNumber === transferData.destinationAccountNumber) {
+        this.showMessage('A conta de origem e destino não podem ser as mesmas.', 'error');
+        return;
+    }
+
+    this.transactionService.transfer(transferData).subscribe({
       next: () => {
-        this.showMessage('Depósito realizado com sucesso!', 'success');
+        this.showMessage('Transferência realizada com sucesso!', 'success');
         setTimeout(() => this.router.navigate(['/menu']), 2000);
       },
       error: (err) => {
-        this.showMessage(err.error?.message || 'Erro ao realizar o depósito.', 'error');
+        this.showMessage(err.error?.message || 'Erro ao realizar a transferência.', 'error');
         console.error(err);
-      }
+      },
     });
   }
 
   private showMessage(msg: string, type: 'success' | 'error', duration: number = 3000): void {
     this.message = msg;
     this.messageType = type;
-    setTimeout(() => this.message = null, duration);
+    setTimeout(() => (this.message = null), duration);
   }
 }

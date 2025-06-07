@@ -17,6 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByCustomerCpf(String customerCPF);
     boolean existsByNumber(String number);
     List<Account> findByCustomer_Id(Long customerId);
+    // comecei a fazer paginacao, mas não era necessário a priori
     // Page<Account> findByCustomer_Id(Long customerId, Pageable pageable);
 
     @Query("SELECT SUM(a.balance) FROM Account a WHERE a.customer.id = :customerId")

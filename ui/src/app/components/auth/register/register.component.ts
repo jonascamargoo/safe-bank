@@ -20,7 +20,6 @@ export class RegisterComponent {
     private router: Router,
     private authService: AuthService
   ) {
-    // Validadores removidos da construção do formulário
     this.registerForm = this.fb.group({
       nome: [''],
       cpf: [''],
@@ -29,22 +28,16 @@ export class RegisterComponent {
     });
   }
 
-  /**
-   * Método onSubmit modificado para submeter o formulário diretamente,
-   * ignorando qualquer validação do lado do cliente.
-   */
   onSubmit() {
     const registerData: RegisterRequestDTO = this.registerForm.value;
 
     this.authService.register(registerData).subscribe({
       next: () => {
         console.log('Registro bem-sucedido!');
-        // Redireciona para a página de login após o sucesso
         this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
       },
       error: (error) => {
         console.error('Falha no registro', error);
-        // Aqui você pode adicionar uma notificação de erro para o usuário
       }
     });
   }

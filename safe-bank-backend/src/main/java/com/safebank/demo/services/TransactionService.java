@@ -34,7 +34,6 @@ public class TransactionService {
 
     @Transactional(readOnly = true)
     public List<TransactionDTO> getTransactionsByAccountNumber(String accountNumber, Authentication authentication) {
-        // Busca a conta e verifica se o usuário autenticado é o dono
         Account account = checkAccountOwnership(accountNumber, authentication);
         
         List<Transaction> transactions = transactionRepository.findByAccount_NumberOrderByTransactionDateDesc(account.getNumber());
@@ -71,21 +70,6 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    // @Transactional
-    // public void deposit(TransactionRequestDTO dto, Authentication authentication) {
-    //     // Busca a conta e verifica se o usuário autenticado é o dono
-    //     Account account = checkAccountOwnership(dto.accountNumber(), authentication);
-
-    //     BigDecimal value = dto.value();
-    //     if (value.compareTo(BigDecimal.ZERO) <= 0) {
-    //         throw new Error("O valor do depósito deve ser positivo.");
-    //     }
-    //     account.setBalance(account.getBalance().add(value));
-    //     accountService.saveAccount(account);
-    //     Transaction transaction = new Transaction(account, value, TransactionType.DEPOSIT);
-    //     transactionRepository.save(transaction);
-    // }
-
     @Transactional
     public void withdraw(TransactionRequestDTO dto, Authentication authentication) {
         Account account = checkAccountOwnership(dto.accountNumber(), authentication);
@@ -108,24 +92,6 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    // @Transactional
-    // public void withdraw(TransactionRequestDTO dto, Authentication authentication) {
-    //     // Busca a conta e verifica se o usuário autenticado é o dono
-    //     Account account = checkAccountOwnership(dto.accountNumber(), authentication);
-        
-    //     BigDecimal value = dto.value();
-    //     if (value.compareTo(BigDecimal.ZERO) <= 0) {
-    //         throw new Error("O valor do saque deve ser positivo.");
-    //     }
-    //     if (account.getBalance().compareTo(value) < 0) {
-    //         throw new Error("Saldo insuficiente para realizar o saque.");
-    //     }
-    //     account.setBalance(account.getBalance().subtract(value));
-    //     accountService.saveAccount(account);
-    //     Transaction transaction = new Transaction(account, value, TransactionType.WITHDRAWAL);
-    //     transactionRepository.save(transaction);
-    // }
-
     @Transactional
     public void transfer(TransferRequestDTO dto, Authentication authentication) {
         if (dto.sourceAccountNumber().equals(dto.destinationAccountNumber())) {
@@ -139,7 +105,6 @@ public class TransactionService {
         BigDecimal totalDebit = value;
         BigDecimal fee = BigDecimal.ZERO;
 
-        // Verifica se a transferência eh entre clientes diferentes
         if (!sourceAccount.getCustomer().getId().equals(destinationAccount.getCustomer().getId())) {
             fee = value.multiply(new BigDecimal("0.10"));
             totalDebit = value.add(fee);
@@ -149,24 +114,19 @@ public class TransactionService {
             throw new Error("Saldo e limite de crédito insuficientes para a transferência.");
         }
 
-        // Debita da conta de origem
         sourceAccount.setBalance(sourceAccount.getBalance().subtract(totalDebit));
         accountService.saveAccount(sourceAccount);
 
-        // Credita na conta de destino
         destinationAccount.setBalance(destinationAccount.getBalance().add(value));
         accountService.saveAccount(destinationAccount);
 
-        // Registra a transação de transferência (saída)
         Transaction transferTransaction = new Transaction(sourceAccount, value, TransactionType.TRANSFER);
         transactionRepository.save(transferTransaction);
 
-        // Registra a transação de transferência (entrada) para a conta de destino
-         Transaction destinationTransaction = new Transaction(destinationAccount, value, TransactionType.TRANSFER);
+        Transaction destinationTransaction = new Transaction(destinationAccount, value, TransactionType.TRANSFER);
         transactionRepository.save(destinationTransaction);
 
 
-        // Registra a taxa se aplicável
         if (fee.compareTo(BigDecimal.ZERO) > 0) {
             Transaction feeTransaction = new Transaction(sourceAccount, fee, TransactionType.FEE);
             feeTransaction.setOriginTransaction(transferTransaction);
@@ -175,8 +135,6 @@ public class TransactionService {
     }
     
 
-
-        // --- NOVO MÉTODO PRIVADO PARA VERIFICAÇÃO DE SEGURANÇA ---
     private Account checkAccountOwnership(String accountNumber, Authentication authentication) {
         Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
         Account account = accountService.getAccountByNumber(accountNumber);

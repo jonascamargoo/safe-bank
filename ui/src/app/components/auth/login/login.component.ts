@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { User } from '../../../domains/User';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService, LoginRequestDTO, LoginResponseDTO } from '../../../services/auth.service';
-import { Auth } from '../../../domains/Auth';
+// import { Auth } from '../../../domains/Auth';
 import { ToastModule } from 'primeng/toast';
 import { CommonModule } from '@angular/common';
 

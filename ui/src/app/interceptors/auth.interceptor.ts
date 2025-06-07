@@ -1,18 +1,17 @@
-// // src/app/interceptors/auth.interceptor.ts
-// import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
-// export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
-//   const authToken = localStorage.getItem('authToken'); // Obtenha o token do localStorage
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const token = authService.getToken();
 
-//   // Se o token existir, clone a requisição e adicione o cabeçalho Authorization
-//   if (authToken) {
-//     req = req.clone({
-//       setHeaders: {
-//         Authorization: `Bearer ${authToken}`
-//       }
-//     });
-//   }
+  if (token) {
+    const cloned = req.clone({
+      headers: req.headers.set('Authorization', `Bearer ${token}`)
+    });
+    return next(cloned);
+  }
 
-//   // Passe a requisição (clonada ou original) para o próximo handler
-//   return next(req);
-// };
+  return next(req);
+};

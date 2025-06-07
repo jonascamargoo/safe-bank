@@ -14,8 +14,6 @@ import com.safebank.demo.domains.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     UserDetails findByCpf(String cpf);
-
-    // Novo método para retornar apenas o ID do Customer pelo CPF
     @Query("SELECT c.id FROM Customer c WHERE c.cpf = :cpfValue")
     Optional<Long> findIdByCpf(@Param("cpfValue") String cpf);
     
