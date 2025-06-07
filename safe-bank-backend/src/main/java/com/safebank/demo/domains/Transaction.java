@@ -49,6 +49,7 @@ public class Transaction implements Serializable {
     private LocalDateTime transactionDate;
 
     public Transaction() {
+        
         this.transactionDate = LocalDateTime.now();
     }
 

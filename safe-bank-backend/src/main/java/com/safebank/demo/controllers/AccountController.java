@@ -36,4 +36,13 @@ public class AccountController {
         List<AccountDTO> accounts = accountService.getAccountsForAuthenticatedCustomer(authentication);
         return ResponseEntity.ok(accounts);
     }
+
+    @DeleteMapping("/{accountNumber}")
+    public ResponseEntity<Void> deleteMyAccount(@PathVariable String accountNumber, Authentication authentication) {
+        accountService.deleteAccount(accountNumber, authentication);
+        // Retorna 204 No Content, um status comum para deleções bem-sucedidas.
+        return ResponseEntity.noContent().build();
+    }
+
+    
 }

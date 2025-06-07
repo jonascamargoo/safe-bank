@@ -109,6 +109,28 @@ public class AccountService {
     //         .collect(Collectors.toList());
     // }
 
+    @Transactional
+    public void deleteAccount(String accountNumber, Authentication authentication) {
+        // 1. Pega o usuário que está autenticado via token.
+        Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+
+        // 2. Busca a conta no banco de dados pelo número fornecido.
+        // Se não encontrar, lança a exceção AccountNotFound.
+        Account account = accountRepository.findByNumber(accountNumber)
+                .orElseThrow(AccountNotFound::new);
+
+        // 3. VERIFICAÇÃO DE POSSE (PASSO MAIS IMPORTANTE)
+        // Compara o ID do dono da conta com o ID do usuário que está logado.
+        if (!account.getCustomer().getId().equals(authenticatedCustomer.getId())) {
+            // Se os IDs forem diferentes, o usuário não é o dono da conta.
+            // Lançamos uma exceção para negar o acesso.
+            throw new SecurityException("Acesso negado: você não tem permissão para remover esta conta.");
+        }
+
+        // 4. Se a verificação de posse passar, deleta a conta.
+        accountRepository.delete(account);
+    }
+
     @Transactional(readOnly = true)
     public List<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication) {
         // 1. Pega o usuário logado a partir do token
@@ -122,5 +144,6 @@ public class AccountService {
                 .map(accountMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
 }

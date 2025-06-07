@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+
 
 import com.safebank.demo.dtos.CustomerDTO;
 import com.safebank.demo.services.CustomerService;
@@ -26,6 +28,11 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<CustomerDTO> getMyInfo(Authentication authentication) {
+        CustomerDTO customerInfo = customerService.getAuthenticatedCustomerInfo(authentication);
+        return ResponseEntity.ok(customerInfo);
+    }
     
     @GetMapping("/")
     public ResponseEntity<List<CustomerDTO>> getCustomers() {
@@ -47,11 +54,6 @@ public class CustomerController {
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCustomer(@PathVariable(value = "id") Long id) {
-        this.customerService.deleteCustomer(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Cliente removido com sucesso.");
-    }
 
 
 }

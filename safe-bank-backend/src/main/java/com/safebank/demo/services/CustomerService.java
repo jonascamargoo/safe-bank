@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,15 @@ public class CustomerService {
         Customer savedCustomer = customerRepository.save(customer);
         return customerMapper.toDTO(savedCustomer);
     }
-   
+
+    public CustomerDTO getAuthenticatedCustomerInfo(Authentication authentication) {
+        // 1. Pega o objeto do usuário que foi autenticado via token
+        Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+
+        // 2. Mapeia a entidade Customer para um CustomerDTO para não expor a senha
+        return customerMapper.toDTO(authenticatedCustomer);
+    }
+    
 
     public List<CustomerDTO> getCustomers() {
         return customerRepository.findAll()
@@ -119,15 +128,6 @@ public class CustomerService {
 
     public boolean customerExistsById(Long id) {
         return customerRepository.existsById(id);
-    }
-
-    @Transactional
-    public void deleteCustomer(Long id) {
-        if (!customerRepository.existsById(id)) {
-            throw new RuntimeException("Cliente não encontrado com ID: " + id + " para exclusão.");
-        }
-        customerRepository.deleteById(id);
-
     }
 
     private Optional<Customer> toCustomer(UserDetails userDetails) {
