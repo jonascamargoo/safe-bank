@@ -55,10 +55,34 @@ public class CustomerService {
 
         String encryptedPassword = new BCryptPasswordEncoder()
                 .encode(registerRequest.password());
-        Customer newCustomer = new Customer(customerCpf, encryptedPassword);
+
+        Customer newCustomer = new Customer(
+            registerRequest.name(),
+            registerRequest.cpf(),
+            encryptedPassword,
+            registerRequest.phoneNumber()
+        );
+        
+        // Customer newCustomer = new Customer(customerCpf, encryptedPassword);
+
         return customerRepository.save(newCustomer);
 
     }
+
+
+    // public void registerCustomer(RegisterRequestDTO registerRequest) {
+    //     if (customerRepository.findByCpf(registerRequest.cpf()) != null) {
+    //         throw new IllegalArgumentException("CPF já cadastrado.");
+    //     }
+        
+    //     // A LINHA ABAIXO É O PONTO CRÍTICO
+    //     Customer newCustomer = customerMapper.toEntity(registerRequest);
+
+    //     String encryptedPassword = passwordEncoder.encode(registerRequest.password());
+    //     newCustomer.setPassword(encryptedPassword);
+
+    //     customerRepository.save(newCustomer);
+    // }
 
     // public CustomerDTO getCustomerByCpf(String cpf) {
     //     return customerRepository.findByCpf(cpf)

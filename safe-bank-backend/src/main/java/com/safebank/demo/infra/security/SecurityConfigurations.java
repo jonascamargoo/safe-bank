@@ -31,8 +31,8 @@ public class SecurityConfigurations {
                                               // confiavel(frontend)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/registrar").permitAll()
                         .anyRequest().authenticated() // como nao temos role admin, todas as req nao autorizadas
                                                       // precisaram de autenticacao
                 )

@@ -43,7 +43,7 @@ public class Customer implements UserDetails{
     @Column(nullable = false)
     @NotBlank private String password;
 
-    public Customer(String cpf, String password) {
+    public Customer(String name, String cpf, String password, String phoneNumber) {
         this.cpf = cpf;
         this.password = password;
     }

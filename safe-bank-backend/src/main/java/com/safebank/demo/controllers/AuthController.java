@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.safebank.demo.domains.Customer;
+import com.safebank.demo.dtos.authentication.LoginRequestDTO;
 import com.safebank.demo.dtos.authentication.LoginResponseDTO;
 import com.safebank.demo.dtos.authentication.RegisterRequestDTO;
 import com.safebank.demo.dtos.authentication.RegisterResponseDTO;
@@ -35,20 +36,18 @@ public class AuthController {
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody @Valid RegisterRequestDTO registerRequest) {
         try {
             customerService.registerCustomer(registerRequest);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegisterResponseDTO("Cliente cadastrado com sucesso"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(new RegisterResponseDTO("Cliente cadastrado com sucesso"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegisterResponseDTO(e.getMessage()));
         }
-
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid RegisterRequestDTO loginRequest) {
+    @PostMapping("/logar")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequest) { // CORREÇÃO
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequest.cpf(), loginRequest.password());
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((Customer) auth.getPrincipal());
         return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token));
-        
     }
 
 }
