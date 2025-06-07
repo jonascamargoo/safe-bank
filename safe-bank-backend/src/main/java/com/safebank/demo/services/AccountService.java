@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.security.core.Authentication;
+
 import com.safebank.demo.domains.Account;
 import com.safebank.demo.domains.Customer;
 import com.safebank.demo.dtos.AccountDTO;
@@ -32,19 +34,45 @@ public class AccountService {
             this.accountMapper = accountMapper;
     }
 
+    // @Transactional
+    // public AccountDTO createAccount(AccountDTO accountDTO) {
+    //     Customer customer = customerService.getCustomerEntityByCpf(accountDTO.customerCPF());
+    //     Account account = new Account();
+    //     account.setCustomer(customer);
+    //     account.setNumber(generateNumber(accountDTO));
+    //     Account savedAccount = accountRepository.save(account);
+    //     return accountMapper.toDTO(savedAccount);
+    // }
+
+    // public String  generateNumber(AccountDTO accountDTO) {
+    //     CustomerDTO customerDTO = customerService.getCustomerByCpf(accountDTO.customerCPF());
+    //     String twoFirstDigits = customerDTO.name().substring(0, 2).toUpperCase();
+    //     Random random = new Random();
+    //     String accountNumber;
+    //     do {
+    //         int randomDigits = 100000 + random.nextInt(900000);
+    //         accountNumber = twoFirstDigits + "-" + randomDigits;
+    //     } while (accountRepository.existsByNumber(accountNumber));
+    //     return accountNumber;
+    // }
+
     @Transactional
-    public AccountDTO createAccount(AccountDTO accountDTO) {
-        Customer customer = customerService.getCustomerEntityByCpf(accountDTO.customerCPF());
+    public AccountDTO createAccount(Authentication authentication) {
+        // 1. Pega o usuário logado diretamente do objeto de autenticação.
+        Customer customer = (Customer) authentication.getPrincipal();
+
+        // 2. Cria a nova conta
         Account account = new Account();
-        account.setCustomer(customer);
-        account.setNumber(generateNumber(accountDTO));
+        account.setCustomer(customer); // Usa o cliente autenticado
+        account.setNumber(generateNumber(customer)); // Passa o objeto Customer
         Account savedAccount = accountRepository.save(account);
+
         return accountMapper.toDTO(savedAccount);
     }
 
-    public String  generateNumber(AccountDTO accountDTO) {
-        CustomerDTO customerDTO = customerService.getCustomerByCpf(accountDTO.customerCPF());
-        String twoFirstDigits = customerDTO.name().substring(0, 2).toUpperCase();
+    // Altere o método generateNumber para receber um Customer em vez de um AccountDTO
+    public String generateNumber(Customer customer) {
+        String twoFirstDigits = customer.getName().substring(0, 2).toUpperCase();
         Random random = new Random();
         String accountNumber;
         do {
@@ -69,16 +97,30 @@ public class AccountService {
     }
 
 
-    @Transactional(readOnly = true)
-    public List<AccountDTO> getAccountsByCustomerId(Long customerId) {
-        if(!customerService.customerExistsById(customerId)) {
-            throw new RuntimeException("Customer not found with ID: " + customerId);
-        }
+    // @Transactional(readOnly = true)
+    // public List<AccountDTO> getAccountsByCustomerId(Long customerId) {
+    //     if(!customerService.customerExistsById(customerId)) {
+    //         throw new RuntimeException("Customer not found with ID: " + customerId);
+    //     }
 
-        List<Account> accounts = accountRepository.findByCustomer_Id(customerId);
+    //     List<Account> accounts = accountRepository.findByCustomer_Id(customerId);
+    //     return accounts.stream()
+    //         .map(accountMapper::toDTO)
+    //         .collect(Collectors.toList());
+    // }
+
+    @Transactional(readOnly = true)
+    public List<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication) {
+        // 1. Pega o usuário logado a partir do token
+        Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+
+        // 2. Busca no repositório as contas que pertencem a esse usuário
+        List<Account> accounts = accountRepository.findByCustomer_Id(authenticatedCustomer.getId());
+
+        // 3. Mapeia para DTO e retorna a lista
         return accounts.stream()
-            .map(accountMapper::toDTO)
-            .collect(Collectors.toList());
+                .map(accountMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }
