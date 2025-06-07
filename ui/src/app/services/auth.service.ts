@@ -13,7 +13,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  register(data: RegisterRequestDTO): Observable<void> { // O endpoint de registrar não retorna corpo
+  register(data: RegisterRequestDTO): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/registrar`, data);
   }
 

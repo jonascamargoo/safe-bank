@@ -22,18 +22,15 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      // O TypeScript garante que o objeto tem o formato correto de LoginRequestDTO
       const loginData: LoginRequestDTO = this.loginForm.value as LoginRequestDTO;
 
       this.authService.login(loginData).subscribe({
         next: (response: LoginResponseDTO) => {
-          // O autocompletar e o compilador garantem o acesso correto a `response.token`
           localStorage.setItem('authToken', response.token);
           this.router.navigate(['/menu']);
         },
         error: (err) => {
           console.error('Login failed', err);
-          // Implementar feedback de erro para o usuário
         }
       });
     }

@@ -49,6 +49,7 @@ public class AuthController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequest.cpf(), loginRequest.password());
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((Customer) auth.getPrincipal());
+        System.out.println("Logouuu");
         return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token));
     }
 
