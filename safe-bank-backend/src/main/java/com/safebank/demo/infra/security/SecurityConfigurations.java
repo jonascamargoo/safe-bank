@@ -40,6 +40,20 @@ public class SecurityConfigurations {
                 .build();
     }
 
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    //     return httpSecurity
+    //             .csrf(csrf -> csrf.disable())
+    //             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //             .authorizeHttpRequests(authorize -> authorize
+    //                     // ALTERAÇÃO PARA DESATIVAR A SEGURANÇA:
+    //                     .anyRequest().permitAll() 
+    //             )
+    //             // O filtro de token pode ou não ser comentado, mas com permitAll não fará diferença.
+    //             // .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+    //             .build();
+    // }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

@@ -44,8 +44,10 @@ public class Customer implements UserDetails{
     @NotBlank private String password;
 
     public Customer(String name, String cpf, String password, String phoneNumber) {
+        this.name = name;
         this.cpf = cpf;
         this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

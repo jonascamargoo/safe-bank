@@ -43,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/logar")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequest) { // CORREÇÃO
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequest.cpf(), loginRequest.password());
         var auth = authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((Customer) auth.getPrincipal());
