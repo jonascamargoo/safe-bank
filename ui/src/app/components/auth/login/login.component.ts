@@ -44,8 +44,7 @@ export class LoginComponent {
     this.authService.login(loginData).subscribe({
       next: (response: LoginResponseDTO) => {
         sessionStorage.setItem('token', response.token);
-        
-        this.router.navigate(['/']);
+        this.router.navigate(['/menu']);
       },
       error: (error) => {
        
