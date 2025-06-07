@@ -9,5 +9,6 @@ public record TransactionDTO(
     BigDecimal value,
     TransactionType type,
     LocalDateTime transactionDate,
-    String accountNumber // será útil para extratos saber a qual conta a transação pertence
+    String accountNumber, // será útil para extratos saber a qual conta a transação pertence
+    Long originTransactionId
 ) {}

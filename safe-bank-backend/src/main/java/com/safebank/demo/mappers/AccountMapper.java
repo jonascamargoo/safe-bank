@@ -12,21 +12,26 @@ public class AccountMapper implements GenericMapper<Account, AccountDTO> {
         if (account == null) {
             return null;
         }
+        // Atualize esta lógica para corresponder ao novo DTO
         return new AccountDTO(
-                account.getId(),
                 account.getNumber(),
-                account.getCustomer() != null ? account.getCustomer().getCpf() : null
+                account.getBalance(),
+                account.getCreditLimit()
         );
     }
 
     @Override
     public Account toEntity(AccountDTO accountDTO) {
+        // Este método converte o DTO para a entidade.
+        // Não precisamos mexer aqui para a sua solicitação atual.
+        // Pode ser implementado se você precisar criar/atualizar contas a partir de um DTO.
         if (accountDTO == null) {
             return null;
         }
         Account account = new Account();
-        account.setId(accountDTO.id());
         account.setNumber(accountDTO.number());
+        account.setBalance(accountDTO.balance());
+        account.setCreditLimit(accountDTO.creditLimit());
         return account;
     }
 }

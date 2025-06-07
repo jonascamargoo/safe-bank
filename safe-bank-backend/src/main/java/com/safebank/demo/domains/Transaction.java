@@ -48,8 +48,11 @@ public class Transaction implements Serializable {
     @Column(nullable = false)
     private LocalDateTime transactionDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idLancamentoOrigem")
+    private Transaction originTransaction;
+
     public Transaction() {
-        
         this.transactionDate = LocalDateTime.now();
     }
 

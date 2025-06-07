@@ -91,6 +91,27 @@ public class AccountService {
         accountRepository.delete(account);
     }
 
+    // @Transactional(readOnly = true)
+    // public List<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication) {
+    //     // 1. Pega o usuário logado a partir do token
+    //     Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+
+    //     // 2. Busca no repositório as contas que pertencem a esse usuário
+    //     List<Account> accounts = accountRepository.findByCustomer_Id(authenticatedCustomer.getId());
+
+    //     // 3. Mapeia para DTO e retorna a lista
+    //     return accounts.stream()
+    //             .map(accountMapper::toDTO)
+    //             .collect(Collectors.toList());
+    // }
+
+    // @Transactional(readOnly = true)
+    // public Page<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication, Pageable pageable) {
+    //     Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
+    //     Page<Account> accountsPage = accountRepository.findByCustomer_Id(authenticatedCustomer.getId(), pageable);
+    //     return accountsPage.map(accountMapper::toDTO);
+    // }
+    
     @Transactional(readOnly = true)
     public List<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication) {
         // 1. Pega o usuário logado a partir do token
@@ -98,19 +119,12 @@ public class AccountService {
 
         // 2. Busca no repositório as contas que pertencem a esse usuário
         List<Account> accounts = accountRepository.findByCustomer_Id(authenticatedCustomer.getId());
-
         // 3. Mapeia para DTO e retorna a lista
         return accounts.stream()
                 .map(accountMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public Page<AccountDTO> getAccountsForAuthenticatedCustomer(Authentication authentication, Pageable pageable) {
-        Customer authenticatedCustomer = (Customer) authentication.getPrincipal();
-        Page<Account> accountsPage = accountRepository.findByCustomer_Id(authenticatedCustomer.getId(), pageable);
-        return accountsPage.map(accountMapper::toDTO);
-    }
-
 
 }
+

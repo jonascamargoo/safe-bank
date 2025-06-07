@@ -6,17 +6,33 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper implements GenericMapper<Transaction, TransactionDTO> {
+    // @Override
+    // public TransactionDTO toDTO(Transaction transaction) {
+    //     if (transaction == null) {
+    //         return null;
+    //     }
+    //     return new TransactionDTO(
+    //             transaction.getId(),
+    //             transaction.getValue(),
+    //             transaction.getType(),
+    //             transaction.getTransactionDate(),
+    //             transaction.getAccount() != null ? transaction.getAccount().getNumber() : null
+    //     );
+    // }
+
     @Override
     public TransactionDTO toDTO(Transaction transaction) {
         if (transaction == null) {
             return null;
         }
+        Long originId = transaction.getOriginTransaction() != null ? transaction.getOriginTransaction().getId() : null;
         return new TransactionDTO(
                 transaction.getId(),
                 transaction.getValue(),
                 transaction.getType(),
                 transaction.getTransactionDate(),
-                transaction.getAccount() != null ? transaction.getAccount().getNumber() : null
+                transaction.getAccount() != null ? transaction.getAccount().getNumber() : null,
+                originId
         );
     }
 

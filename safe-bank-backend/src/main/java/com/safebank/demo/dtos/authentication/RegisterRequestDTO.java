@@ -8,3 +8,10 @@ public record RegisterRequestDTO(
     @NotBlank String password,
     @NotBlank String phoneNumber
 ) {}
+
+
+
+
+
+
+

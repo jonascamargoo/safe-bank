@@ -39,13 +39,13 @@ public class Account implements Serializable {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal balance;
 
+    @NotNull(message = "Credit limit cannot be null.")
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal creditLimit;
+
     public Account() {
         this.balance = BigDecimal.ZERO;
+        this.creditLimit = new BigDecimal("1000.00");
     }
 
-    // public Account(String number, Customer customer) {
-    //     this(); // Calls the default constructor to set balance to ZERO
-    //     this.number = number;
-    //     this.customer = customer;
-    // }
 }

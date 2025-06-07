@@ -1,11 +1,12 @@
 package com.safebank.demo.repositories;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.safebank.demo.domains.Account;
@@ -16,5 +17,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByCustomerCpf(String customerCPF);
     boolean existsByNumber(String number);
     List<Account> findByCustomer_Id(Long customerId);
-    Page<Account> findByCustomer_Id(Long customerId, Pageable pageable);
+    // Page<Account> findByCustomer_Id(Long customerId, Pageable pageable);
+
+    @Query("SELECT SUM(a.balance) FROM Account a WHERE a.customer.id = :customerId")
+    BigDecimal sumBalanceByCustomerId(@Param("customerId") Long customerId);
+
 }
